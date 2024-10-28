@@ -2,7 +2,7 @@
 import sys
 class Solution(object):
     @staticmethod
-    def num_moves(spawn, nums, k, maxChanges):
+    def num_moves(spawn, nums, k, maxChanges, min_moves):
         """
         :type i: int
         :type nums: List[int]
@@ -45,6 +45,10 @@ class Solution(object):
             if cur_ones >= k:
                 assert cur_ones == k
                 break
+                
+            if moves >= min_moves:
+                # Stop searching. We already have a better solution.
+                break
 
         return moves
     def minimumMoves(self, nums, k, maxChanges):
@@ -56,11 +60,11 @@ class Solution(object):
         """
         min_moves = sys.maxsize
         for i in range(len(nums)):
-            moves = Solution.num_moves(i, nums, k, maxChanges)
+            # TODO: Start the search in a dense area and loop around in necessary
+            moves = Solution.num_moves(i, nums, k, maxChanges, min_moves)
             # print(f"i: {i}. moves: {moves}")
             if moves < min_moves:
                 min_moves = moves
-
         return min_moves
 
 if __name__ == "__main__":
