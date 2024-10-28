@@ -61,7 +61,11 @@ class Solution(object):
         min_moves = sys.maxsize
         for i in range(len(nums)):
             # TODO: Start the search in a dense area and loop around in necessary
-            moves = Solution.num_moves(i, nums, k, maxChanges, min_moves)
+
+            # Start in the middle as there is on average more values to search from
+            j = (i + int(len(nums)/2))%len(nums)
+
+            moves = Solution.num_moves(j, nums, k, maxChanges, min_moves)
             # print(f"i: {i}. moves: {moves}")
             if moves < min_moves:
                 min_moves = moves
