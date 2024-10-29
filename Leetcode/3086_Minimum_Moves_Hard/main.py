@@ -1,8 +1,4 @@
 # https://leetcode.com/problems/minimum-moves-to-pick-k-ones
-from tqdm import tqdm
-import time
-
-# COPY BELOW
 import sys
 class Solution(object):
     @staticmethod
@@ -63,7 +59,7 @@ class Solution(object):
         :rtype: int
         """
         min_moves = sys.maxsize
-        for i in tqdm(range(len(nums))):
+        for i in range(len(nums)):
             # TODO: Start the search in a dense area and loop around in necessary
 
             # Start in the middle as there is on average more values to search from
@@ -74,31 +70,28 @@ class Solution(object):
             if moves < min_moves:
                 min_moves = moves
         return min_moves
-# COPY ABOVE
 
 if __name__ == "__main__":
     sol = Solution()
 
     # Test 1
-    # result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], 3, 1)
-    # answer = 3
-    # assert result == answer, f"{result} not equal to {answer}"
+    result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], 3, 1)
+    answer = 3
+    assert result == answer, f"{result} not equal to {answer}"
 
     # Test 2
-    # result = sol.minimumMoves([0,0,0,0], 2, 3)
-    # answer = 4
-    # assert result == answer, f"{result} not equal to {answer}" 
+    result = sol.minimumMoves([0,0,0,0], 2, 3)
+    answer = 4
+    assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 3
-    f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
-    nums, k, maxChanges = [line.strip() for line in f.readlines()]
-    nums = [int(num) for num in nums[1:-3].split(",")]
-    start = time.time()
-    result = sol.minimumMoves(nums, int(k), int(maxChanges))
-    end = time.time()
-    print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # Laptop: Time (s):  137.39
-    answer = 6828536
-    assert result == answer, f"{result} not equal to {answer}" 
+
+    f = open("demofile.txt", "r")
+    print(f.readlines())
+
+    # nums = 
+    # result = sol.minimumMoves(nums, 3818, 55)
+    # answer = ...
+    # assert result == answer, f"{result} not equal to {answer}" 
 
     
