@@ -26,6 +26,7 @@ import time
 
 
 # COPY BELOW
+# TODO: Keep going even if one has hit the k limit. There might still be better moves.
 import numpy as np
 class Solution(object):
     @staticmethod
@@ -103,6 +104,6 @@ if __name__ == "__main__":
     # Laptop: time (s):  137.39
     # Parallel improved PC time (s): 3.99
     answer = 6828536
-    assert result == answer, f"{result} not equal to {answer}" 
+    assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     
