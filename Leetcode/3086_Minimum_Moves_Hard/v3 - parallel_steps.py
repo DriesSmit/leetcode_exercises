@@ -61,21 +61,21 @@ class Solution(object):
                     cur_ones += min_add
                     moves += 2*min_add
                     break
-            else:
-                # TODO: Update this to multistep increases if needed
-                # Left case
-                next_left = np.maximum(0, left - 1)
-                cur_ones, moves = Solution.update_stats(nums, spawn, next_left, left!=next_left, cur_ones, moves)
-                left = next_left
-                if np.any(cur_ones==k):
-                    break
+        
+            # TODO: Update this to multistep increases if needed
+            # Left case
+            next_left = np.maximum(0, left - 1)
+            cur_ones, moves = Solution.update_stats(nums, spawn, next_left, left!=next_left, cur_ones, moves)
+            left = next_left
+            if np.any(cur_ones==k):
+                break
 
-                # Right case
-                next_right = np.minimum(len(nums)-1, right + 1)
-                cur_ones, moves = Solution.update_stats(nums, spawn, next_right, right!=next_right, cur_ones, moves)
-                right = next_right
-                if np.any(cur_ones==k):
-                    break
+            # Right case
+            next_right = np.minimum(len(nums)-1, right + 1)
+            cur_ones, moves = Solution.update_stats(nums, spawn, next_right, right!=next_right, cur_ones, moves)
+            right = next_right
+            if np.any(cur_ones==k):
+                break
         return int(np.min(moves[cur_ones==k]))
 # COPY ABOVE
 
@@ -83,14 +83,14 @@ if __name__ == "__main__":
     sol = Solution()
 
     # Test 1
-    # result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], k=3, maxChanges=1)
-    # answer = 3
-    # assert result == answer, f"{result} not equal to {answer}"
+    result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], k=3, maxChanges=1)
+    answer = 3
+    assert result == answer, f"{result} not equal to {answer}"
 
     # Test 2
-    # result = sol.minimumMoves([0,0,0,0], k=2, maxChanges=3)
-    # answer = 4
-    # assert result == answer, f"{result} not equal to {answer}" 
+    result = sol.minimumMoves([0,0,0,0], k=2, maxChanges=3)
+    answer = 4
+    assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 3
     f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
