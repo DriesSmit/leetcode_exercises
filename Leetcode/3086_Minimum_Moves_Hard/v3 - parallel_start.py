@@ -140,7 +140,7 @@ if __name__ == "__main__":
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
     # Laptop: time (s):  137.39
-    # Parallel improved PC time (s): 4.25
+    # Parallel improved PC time (s): 3.63
     answer = 6828536
     assert result == answer, f"Calculated value {result} not equal to answer {answer}"
 
@@ -152,7 +152,7 @@ if __name__ == "__main__":
     result = sol.minimumMoves(nums, k=23886, maxChanges=15694)
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # Parallel improved PC time (s): 11.74
+    # Parallel improved PC time (s): 7.9
     answer = 33169542
     assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
