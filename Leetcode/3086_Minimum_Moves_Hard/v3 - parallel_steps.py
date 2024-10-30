@@ -51,12 +51,6 @@ class Solution(object):
         # Add premove start values
         cur_ones = np.array(nums[spawn], dtype=np.int32) # TODO: Why is this faster with spawn that without?
         for rad in range(1, len(nums)):
-            if rad == 2:
-                # Address the maxChanges case
-                num_changes = np.minimum(k-cur_ones, maxChanges)
-                cur_ones += num_changes
-                moves += 2*num_changes # It takes two moves to use a change move
-        
             # TODO: Update this to multistep increases if needed
             # Left case
             next_left = np.maximum(0, left - 1)
@@ -73,6 +67,12 @@ class Solution(object):
             right = next_right
             if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
                 break
+
+            if rad == 2 or len(nums)<=2:
+                # Address the maxChanges case
+                num_changes = np.minimum(k-cur_ones, maxChanges)
+                cur_ones += num_changes
+                moves += 2*num_changes # It takes two moves to use a change move
         return int(np.min(moves[cur_ones==k]))
 # COPY ABOVE
 
@@ -90,16 +90,38 @@ if __name__ == "__main__":
     assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 3
-    f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
-    nums, k, maxChanges = [line.strip() for line in f.readlines()]
+    result = sol.minimumMoves([0,0], k=1, maxChanges=3)
+    answer = 2
+    assert result == answer, f"{result} not equal to {answer}" 
+
+    # Test 4
+    result = sol.minimumMoves([1,1], k=2, maxChanges=4)
+    answer = 1
+    assert result == answer, f"{result} not equal to {answer}" 
+
+    # Test 5
+    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
+    # nums, k, maxChanges = [line.strip() for line in f.readlines()]
+    # nums = [int(num) for num in nums[1:-3].split(",")]
+    # start = time.time()
+    # result = sol.minimumMoves(nums, k=int(k), maxChanges=int(maxChanges))
+    # end = time.time()
+    # print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # # Laptop: time (s):  137.39
+    # # Parallel improved PC time (s): 3.99
+    # answer = 6828536
+    # assert result == answer, f"Calculated value {result} not equal to answer {answer}"
+
+    # Test 6
+    f = open("./Leetcode/3086_Minimum_Moves_Hard/example2.txt", "r")
+    nums = [line.strip() for line in f.readlines()][0]
     nums = [int(num) for num in nums[1:-3].split(",")]
     start = time.time()
-    result = sol.minimumMoves(nums, k=int(k), maxChanges=int(maxChanges))
+    result = sol.minimumMoves(nums, k=23886, maxChanges=15694)
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # Laptop: time (s):  137.39
     # Parallel improved PC time (s): 3.99
-    answer = 6828536
+    answer = 33169542
     assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     
