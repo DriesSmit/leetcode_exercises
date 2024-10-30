@@ -74,6 +74,8 @@ class Solution(object):
         :rtype: int
         """
         nums = np.array(nums, np.bool)
+        zeros = np.zeros_like(nums)
+        nums_big = np.concat([nums, zeros, zeros])
         spawn = np.arange(len(nums), dtype=np.int32)
         left = np.arange(len(nums), dtype=np.int32)
         right = np.arange(len(nums), dtype=np.int32)
@@ -89,19 +91,17 @@ class Solution(object):
             for _ in range(2, len(nums)):
                 # TODO: Update this to multistep increases if needed
                 # Left case
-                next_left = np.maximum(0, left - 1)
-                should_check = (left!=next_left) & (cur_ones<k)
-                cur_ones, moves = Solution.update_stats(nums, spawn, next_left, should_check, cur_ones, moves)
-                left = next_left
+                left -= 1
+                should_check = cur_ones<k
+                cur_ones, moves = Solution.update_stats(nums_big, spawn, left, should_check, cur_ones, moves)
                 result = cur_ones==k
                 if np.all(result) or (np.any(result) > 0 and np.all(moves >= np.min(moves[result]))):
                     break
 
                 # Right case
-                next_right = np.minimum(len(nums)-1, right + 1)
-                should_check = (right!=next_right) & (cur_ones<k)
-                cur_ones, moves = Solution.update_stats(nums, spawn, next_right, should_check, cur_ones, moves)
-                right = next_right
+                right += 1
+                should_check = cur_ones<k
+                cur_ones, moves = Solution.update_stats(nums_big, spawn, right, should_check, cur_ones, moves)
                 result = cur_ones==k
                 if np.all(result) or (np.any(result) > 0 and np.all(moves >= np.min(moves[result]))):
                     break
