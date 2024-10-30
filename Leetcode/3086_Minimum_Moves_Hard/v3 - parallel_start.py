@@ -61,8 +61,9 @@ class Solution(object):
 
     @staticmethod
     def update_stats(nums, spawn, locs, should_check, cur_ones, moves):
-        cur_ones += should_check * nums[locs]
-        moves += should_check * np.abs(locs-spawn) * nums[locs]
+        result = should_check * nums[locs]
+        cur_ones += result
+        moves += result * np.abs(locs-spawn)
         return cur_ones, moves
 
     def minimumMoves(self, nums, k, maxChanges):
@@ -79,7 +80,7 @@ class Solution(object):
         moves = np.zeros(len(nums), dtype=np.int32) # TODO: Is moves required or can it be calculated at the end?
 
         # Add premove start values
-        cur_ones = np.array(nums[spawn], dtype=np.int32) # TODO: Why is this faster with spawn that without?
+        cur_ones = np.array(nums, dtype=np.int32)
 
         # Handle the start seperately to make the rest of the code implementation simpler. 
         done, cur_ones, moves, left, right = Solution.handle_start(nums, spawn, left, right, cur_ones, moves, k, maxChanges)
@@ -89,18 +90,20 @@ class Solution(object):
                 # TODO: Update this to multistep increases if needed
                 # Left case
                 next_left = np.maximum(0, left - 1)
-                should_check = (left!=next_left) * (cur_ones<k)
+                should_check = (left!=next_left) & (cur_ones<k)
                 cur_ones, moves = Solution.update_stats(nums, spawn, next_left, should_check, cur_ones, moves)
                 left = next_left
-                if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
+                result = cur_ones==k
+                if np.all(result) or (np.any(result) > 0 and np.all(moves >= np.min(moves[result]))):
                     break
 
                 # Right case
                 next_right = np.minimum(len(nums)-1, right + 1)
-                should_check = (right!=next_right) * (cur_ones<k)
+                should_check = (right!=next_right) & (cur_ones<k)
                 cur_ones, moves = Solution.update_stats(nums, spawn, next_right, should_check, cur_ones, moves)
                 right = next_right
-                if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
+                result = cur_ones==k
+                if np.all(result) or (np.any(result) > 0 and np.all(moves >= np.min(moves[result]))):
                     break
         return int(np.min(moves[cur_ones==k]))
 # COPY ABOVE
@@ -137,7 +140,7 @@ if __name__ == "__main__":
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
     # Laptop: time (s):  137.39
-    # Parallel improved PC time (s): 6.7
+    # Parallel improved PC time (s): 4.25
     answer = 6828536
     assert result == answer, f"Calculated value {result} not equal to answer {answer}"
 
@@ -149,7 +152,7 @@ if __name__ == "__main__":
     result = sol.minimumMoves(nums, k=23886, maxChanges=15694)
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # Parallel improved PC time (s): 14.92
+    # Parallel improved PC time (s): 11.74
     answer = 33169542
     assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 

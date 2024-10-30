@@ -56,13 +56,20 @@ class Solution(object):
             cur_ones += num_changes
             moves += 2*num_changes # It takes two moves to use a change move
 
-
         return done, cur_ones, moves, left, right
 
     @staticmethod
     def update_stats(nums, spawn, locs, should_check, cur_ones, moves):
         cur_ones += should_check * nums[locs]
         moves += should_check * np.abs(locs-spawn) * nums[locs]
+        return cur_ones, moves
+
+    @staticmethod
+    def update_batched_stats(nums, spawn, start, end, cur_ones, moves, k):
+        update = k < cur_ones
+        cur_ones += update * np.sum(nums[start:end], axis=-1)
+        moves += update * np.sum(np.abs(spawn-np.arange(start,end)), axis=-1)
+
         return cur_ones, moves
 
     def minimumMoves(self, nums, k, maxChanges):
@@ -86,19 +93,19 @@ class Solution(object):
 
         if not done:
             for _ in range(2, len(nums)):
-                # TODO: Update this to multistep increases if needed
+                # The minimum step size that will overshoot
+                min_step_size = np.max(1, int(np.min(k-cur_ones)/2))
+
                 # Left case
-                next_left = np.maximum(0, left - 1)
-                should_check = (left!=next_left) * (cur_ones<k)
-                cur_ones, moves = Solution.update_stats(nums, spawn, next_left, should_check, cur_ones, moves)
+                next_left = np.maximum(0, left - min_step_size)
+                cur_ones, moves = Solution.update_batched_stats(nums, spawn, next_left, left, cur_ones, moves, k)
                 left = next_left
                 if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
                     break
 
                 # Right case
-                next_right = np.minimum(len(nums)-1, right + 1)
-                should_check = (right!=next_right) * (cur_ones<k)
-                cur_ones, moves = Solution.update_stats(nums, spawn, next_right, should_check, cur_ones, moves)
+                next_right = np.minimum(len(nums)-1, right + min_step_size)
+                cur_ones, moves = Solution.update_batched_stats(nums, spawn, right, next_right, cur_ones, moves, k)
                 right = next_right
                 if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
                     break
