@@ -30,9 +30,9 @@ import time
 import numpy as np
 class Solution(object):
     @staticmethod
-    def update_stats(nums, spawn, locs, updated, cur_ones, moves):
-        cur_ones += updated * nums[locs]
-        moves += updated * np.abs(locs-spawn) * nums[locs]
+    def update_stats(nums, spawn, locs, should_check, cur_ones, moves):
+        cur_ones += should_check * nums[locs]
+        moves += should_check * np.abs(locs-spawn) * nums[locs]
         return cur_ones, moves
 
     def minimumMoves(self, nums, k, maxChanges):
@@ -53,29 +53,25 @@ class Solution(object):
         for rad in range(1, len(nums)):
             if rad == 2:
                 # Address the maxChanges case
-                if np.all(k-cur_ones > maxChanges):
-                    cur_ones += maxChanges
-                    moves += 2*maxChanges # It takes two moves to use a change move
-                else:
-                    # maxChanges is enough to find min moves
-                    min_add = np.min(k-cur_ones)
-                    cur_ones += min_add
-                    moves += 2*min_add
-                    break
+                num_changes = np.minimum(k-cur_ones, maxChanges)
+                cur_ones += num_changes
+                moves += 2*num_changes # It takes two moves to use a change move
         
             # TODO: Update this to multistep increases if needed
             # Left case
             next_left = np.maximum(0, left - 1)
-            cur_ones, moves = Solution.update_stats(nums, spawn, next_left, left!=next_left, cur_ones, moves)
+            should_check = (left!=next_left) * (cur_ones<k)
+            cur_ones, moves = Solution.update_stats(nums, spawn, next_left, should_check, cur_ones, moves)
             left = next_left
-            if np.any(cur_ones==k):
+            if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
                 break
 
             # Right case
             next_right = np.minimum(len(nums)-1, right + 1)
-            cur_ones, moves = Solution.update_stats(nums, spawn, next_right, right!=next_right, cur_ones, moves)
+            should_check = (right!=next_right) * (cur_ones<k)
+            cur_ones, moves = Solution.update_stats(nums, spawn, next_right, should_check, cur_ones, moves)
             right = next_right
-            if np.any(cur_ones==k):
+            if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
                 break
         return int(np.min(moves[cur_ones==k]))
 # COPY ABOVE
