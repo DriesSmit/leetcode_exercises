@@ -31,7 +31,7 @@ class Solution(object):
     @staticmethod
     def update_stats(nums, spawn, locs, updated, cur_ones, moves):
         cur_ones += updated * nums[locs]
-        moves += updated * np.abs(locs-spawn)
+        moves += updated * np.abs(locs-spawn) * nums[locs]
         return cur_ones, moves
 
     def minimumMoves(self, nums, k, maxChanges):
@@ -49,59 +49,60 @@ class Solution(object):
 
         # Add premove start values
         cur_ones = np.array(nums[spawn], dtype=np.int32)
-
         for rad in range(1, len(nums)):
             if rad == 2:
                 # Address the maxChanges case
-                if np.all(k-cur_ones >= maxChanges):
+                if np.all(k-cur_ones > maxChanges):
                     cur_ones += maxChanges
                     moves += 2*maxChanges # It takes two moves to use a change move
                 else:
                     # maxChanges is enough to find min moves
-                    min_add = np.minimum(k-cur_ones)
+                    min_add = np.min(k-cur_ones)
                     cur_ones += min_add
-                    moves += min_add
+                    moves += 2*min_add
                     break
             else:
                 # TODO: Update this to multistep increases if needed
                 # Left case
                 next_left = np.maximum(0, left - 1)
-                ones, moves = Solution.update_stats(nums, spawn, next_left, left==next_left, cur_ones, moves)
-                if np.any(ones==k):
+                cur_ones, moves = Solution.update_stats(nums, spawn, next_left, left!=next_left, cur_ones, moves)
+                left = next_left
+                if np.any(cur_ones==k):
                     break
 
                 # Right case
                 next_right = np.minimum(len(nums)-1, right + 1)
-                ones, moves = Solution.update_stats(nums, spawn, next_right, right==next_right, cur_ones, moves)
-                if np.any(ones==k):
+                cur_ones, moves = Solution.update_stats(nums, spawn, next_right, right!=next_right, cur_ones, moves)
+                right = next_right
+                if np.any(cur_ones==k):
                     break
-
-        return int(np.min(moves))
+        return int(np.min(moves[cur_ones==k]))
 # COPY ABOVE
 
 if __name__ == "__main__":
     sol = Solution()
 
     # Test 1
-    result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], 3, 1)
+    result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], k=3, maxChanges=1)
     answer = 3
     assert result == answer, f"{result} not equal to {answer}"
 
     # Test 2
-    result = sol.minimumMoves([0,0,0,0], 2, 3)
+    result = sol.minimumMoves([0,0,0,0], k=2, maxChanges=3)
     answer = 4
     assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 3
-    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
-    # nums, k, maxChanges = [line.strip() for line in f.readlines()]
-    # nums = [int(num) for num in nums[1:-3].split(",")]
-    # start = time.time()
-    # result = sol.minimumMoves(nums, int(k), int(maxChanges))
-    # end = time.time()
-    # print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # # Laptop: Time (s):  137.39
-    # answer = 6828536
-    # assert result == answer, f"{result} not equal to {answer}" 
+    f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
+    nums, k, maxChanges = [line.strip() for line in f.readlines()]
+    nums = [int(num) for num in nums[1:-3].split(",")]
+    start = time.time()
+    result = sol.minimumMoves(nums, int(k), int(maxChanges))
+    end = time.time()
+    print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # Laptop: time (s):  137.39
+    # Parallel improved PC time (s): 3.99
+    answer = 6828536
+    assert result == answer, f"{result} not equal to {answer}" 
 
     
