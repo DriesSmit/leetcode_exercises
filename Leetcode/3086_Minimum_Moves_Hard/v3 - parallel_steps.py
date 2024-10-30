@@ -1,5 +1,5 @@
 # https://leetcode.com/problems/minimum-moves-to-pick-k-ones
-from tqdm import tqdm
+# from tqdm import tqdm
 import time
 
 # Options
@@ -11,78 +11,29 @@ import time
 
 # Space complexity O(n)?
 # Memory complexity O(n)?
+# Do we need to calculate moves per turn?
+
+# Variables:
+
+# rad : int
+# k: int
+# maxChanges: int
+# nums: array of size n
+# left: array of size n
+# right: array of size n
+# ones: array of size n
+# moves (optional): array of size n
 
 
 # COPY BELOW
-import sys
 import numpy as np
 class Solution(object):
     @staticmethod
-    def num_moves(spawn, nums, k, maxChanges, min_moves):
-        """
-        :type i: int
-        :type nums: List[int]
-        :type k: int
-        :type maxChanges: int
-        :rtype: int
-        """
-        nums = np.array(nums, dtype=np.bool)
-        left, right = 0, 0
-        used_max_changes = False
-        cur_ones = nums[spawn]
-        nums[spawn] = 0
-        moves = 0
-        while cur_ones < k:
-            if not used_max_changes and (left >= 2 or spawn-left==0) and (right >= 2 or spawn+right == len(nums)-1):
-                used_max_changes = True
-                # Use the maxChanges
-                if k-cur_ones >= maxChanges:
-                    cur_ones += maxChanges
-                    moves += maxChanges*2
-                else:
-                    moves += 2*(k-cur_ones)
-                    # cur_ones = k
-                    break
+    def update_stats(nums, spawn, locs, updated, cur_ones, moves):
+        cur_ones += updated * nums[locs]
+        moves += updated * np.abs(locs-spawn)
+        return cur_ones, moves
 
-            elif 0 < spawn-left and (left <= right or spawn+right >= len(nums)-1):
-                # Increment left
-                if left > 2:
-                    # At a minimum this is the number of left spaces still to be searched
-                    min_remaining_left = max(int((k-cur_ones)/2), 1)
-                    if spawn - left - min_remaining_left < 0:
-                        # Spaces left until the start
-                        min_remaining_left = spawn - left
-                else:
-                    min_remaining_left = 1    
-                ones_arr = nums[spawn-left-min_remaining_left: spawn-left]
-                cur_ones += np.sum(ones_arr)
-                moves += np.sum(ones_arr*(left + np.arange(len(ones_arr), 0, -1)))
-                left += min_remaining_left
-            else:
-
-                # Increment left
-                if right > 2:
-                    # At a minimum this is the number of left spaces still to be searched
-                    min_remaining_right = max(int((k-cur_ones)/2), 1)
-                    if spawn + right - min_remaining_right >= len(nums):
-                        # Spaces left until the start
-                        min_remaining_right = len(nums) - (spawn + right)
-                else:
-                    min_remaining_right = 1
-                ones_arr = nums[spawn+right: spawn+right+min_remaining_right]
-                cur_ones += np.sum(ones_arr)
-                moves += np.sum(ones_arr*(right + np.arange(len(ones_arr))))
-                right += min_remaining_right
-
-            if cur_ones >= k:
-                assert cur_ones == k
-                break
-                
-            if moves >= min_moves:
-                # Stop searching. We already have a better solution.
-                break
-
-        return moves
     def minimumMoves(self, nums, k, maxChanges):
         """
         :type nums: List[int]
@@ -90,43 +41,67 @@ class Solution(object):
         :type maxChanges: int
         :rtype: int
         """
-        min_moves = sys.maxsize
-        for i in tqdm(range(len(nums))):
-            # TODO: Start the search in a dense area and loop around in necessary
+        nums = np.array(nums, np.bool)
+        spawn = np.arange(len(nums), dtype=np.int32)
+        left = np.arange(len(nums), dtype=np.int32)
+        right = np.arange(len(nums), dtype=np.int32)
+        moves = np.zeros(len(nums), dtype=np.int32) # TODO: Is moves required or can it be calculated at the end?
 
-            # Start in the middle as there is on average more values to search from
-            # j = (i + int(len(nums)/2))%len(nums)
+        # Add premove start values
+        cur_ones = np.array(nums[spawn], dtype=np.int32)
 
-            moves = Solution.num_moves(i, nums, k, maxChanges, min_moves)
-            # print(f"i: {i}. moves: {moves}")
-            if moves < min_moves:
-                min_moves = moves
-        return min_moves
+        for rad in range(1, len(nums)):
+            if rad == 2:
+                # Address the maxChanges case
+                if np.all(k-cur_ones >= maxChanges):
+                    cur_ones += maxChanges
+                    moves += 2*maxChanges # It takes two moves to use a change move
+                else:
+                    # maxChanges is enough to find min moves
+                    min_add = np.minimum(k-cur_ones)
+                    cur_ones += min_add
+                    moves += min_add
+                    break
+            else:
+                # TODO: Update this to multistep increases if needed
+                # Left case
+                next_left = np.maximum(0, left - 1)
+                ones, moves = Solution.update_stats(nums, spawn, next_left, left==next_left, cur_ones, moves)
+                if np.any(ones==k):
+                    break
+
+                # Right case
+                next_right = np.minimum(len(nums)-1, right + 1)
+                ones, moves = Solution.update_stats(nums, spawn, next_right, right==next_right, cur_ones, moves)
+                if np.any(ones==k):
+                    break
+
+        return int(np.min(moves))
 # COPY ABOVE
 
 if __name__ == "__main__":
     sol = Solution()
 
     # Test 1
-    # result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], 3, 1)
-    # answer = 3
-    # assert result == answer, f"{result} not equal to {answer}"
+    result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], 3, 1)
+    answer = 3
+    assert result == answer, f"{result} not equal to {answer}"
 
     # Test 2
-    # result = sol.minimumMoves([0,0,0,0], 2, 3)
-    # answer = 4
-    # assert result == answer, f"{result} not equal to {answer}" 
+    result = sol.minimumMoves([0,0,0,0], 2, 3)
+    answer = 4
+    assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 3
-    f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
-    nums, k, maxChanges = [line.strip() for line in f.readlines()]
-    nums = [int(num) for num in nums[1:-3].split(",")]
-    start = time.time()
-    result = sol.minimumMoves(nums, int(k), int(maxChanges))
-    end = time.time()
-    print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # Laptop: Time (s):  137.39
-    answer = 6828536
-    assert result == answer, f"{result} not equal to {answer}" 
+    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
+    # nums, k, maxChanges = [line.strip() for line in f.readlines()]
+    # nums = [int(num) for num in nums[1:-3].split(",")]
+    # start = time.time()
+    # result = sol.minimumMoves(nums, int(k), int(maxChanges))
+    # end = time.time()
+    # print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # # Laptop: Time (s):  137.39
+    # answer = 6828536
+    # assert result == answer, f"{result} not equal to {answer}" 
 
     
