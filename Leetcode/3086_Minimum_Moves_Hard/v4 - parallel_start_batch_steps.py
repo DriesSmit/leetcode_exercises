@@ -25,6 +25,12 @@ import time
 # moves (optional): array of size n
 
 
+# TO SPEED THIS UP
+# Use nums.cumsum to be able to quickly calculate sums between two values.
+# Do the same for moves. For moves you will have to use the nums.cumsum value to get the correct moves addition.
+
+
+
 # COPY BELOW
 # TODO: Keep going even if one has hit the k limit. There might still be better moves.
 import numpy as np
