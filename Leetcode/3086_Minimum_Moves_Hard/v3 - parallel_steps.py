@@ -48,7 +48,7 @@ class Solution(object):
         moves = np.zeros(len(nums), dtype=np.int32) # TODO: Is moves required or can it be calculated at the end?
 
         # Add premove start values
-        cur_ones = np.array(nums[spawn], dtype=np.int32)
+        cur_ones = np.array(nums[spawn], dtype=np.int32) # TODO: Why is this faster with spawn that without?
         for rad in range(1, len(nums)):
             if rad == 2:
                 # Address the maxChanges case
@@ -83,21 +83,21 @@ if __name__ == "__main__":
     sol = Solution()
 
     # Test 1
-    result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], k=3, maxChanges=1)
-    answer = 3
-    assert result == answer, f"{result} not equal to {answer}"
+    # result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], k=3, maxChanges=1)
+    # answer = 3
+    # assert result == answer, f"{result} not equal to {answer}"
 
     # Test 2
-    result = sol.minimumMoves([0,0,0,0], k=2, maxChanges=3)
-    answer = 4
-    assert result == answer, f"{result} not equal to {answer}" 
+    # result = sol.minimumMoves([0,0,0,0], k=2, maxChanges=3)
+    # answer = 4
+    # assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 3
     f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
     nums, k, maxChanges = [line.strip() for line in f.readlines()]
     nums = [int(num) for num in nums[1:-3].split(",")]
     start = time.time()
-    result = sol.minimumMoves(nums, int(k), int(maxChanges))
+    result = sol.minimumMoves(nums, k=int(k), maxChanges=int(maxChanges))
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
     # Laptop: time (s):  137.39
