@@ -160,6 +160,14 @@ class Solution(object):
 if __name__ == "__main__":
     sol = Solution()
 
+    # Test 0
+    result = sol.minimumMoves([1,1,0,1,1,0,0,1,1,0,0,1,0,0,1], k=5, maxChanges=1)
+    answer = 8
+    assert result == answer, f"{result} not equal to {answer}"
+    # Left. rad: 2, cur_ones: [3 3 4 4 3 3 3 3 3 3 3 2 2 3 2], moves: [3 3 6 5 3 5 5 3 3 5 5 2 3 5 2]
+    # Right. rad: 2, cur_ones: [3 4 5 4 3 4 4 3 3 4 3 2 3 3 2], moves: [3 5 8 5 3 7 7 3 3 7 5 2 5 5 2]
+    # Left. rad: 3, cur_ones: [3 4 5 5 4 4 5 4 3 4 4 3 3 3 3], moves: [ 3  5  8  8  6  7 10  6  3  7  8  5  5  5  5]
+
     # Test 1
     # result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], k=3, maxChanges=1)
     # answer = 3
@@ -181,17 +189,17 @@ if __name__ == "__main__":
     # assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 5
-    f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
-    nums = [line.strip() for line in f.readlines()][0]
-    nums = [int(num) for num in nums[1:-3].split(",")]
-    start = time.time()
-    result = sol.minimumMoves(nums, k=3818, maxChanges=55)
-    end = time.time()
-    print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # Laptop: time (s):  137.39
-    # Parallel improved PC time (s): 3.63
-    answer = 6828536
-    assert result == answer, f"Calculated value {result} not equal to answer {answer}"
+    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
+    # nums = [line.strip() for line in f.readlines()][0]
+    # nums = [int(num) for num in nums[1:-3].split(",")]
+    # start = time.time()
+    # result = sol.minimumMoves(nums, k=3818, maxChanges=55)
+    # end = time.time()
+    # print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # # Laptop: time (s):  137.39
+    # # Parallel improved PC time (s): 3.63
+    # answer = 6828536
+    # assert result == answer, f"Calculated value {result} not equal to answer {answer}"
 
     # Test 6
     # f = open("./Leetcode/3086_Minimum_Moves_Hard/example2.txt", "r")
