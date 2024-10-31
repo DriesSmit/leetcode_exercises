@@ -181,7 +181,7 @@ if __name__ == "__main__":
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
     # Laptop: time (s):  137.39
-    # Parallel improved PC time (s): 3.63
+    # Parallel improved PC time (s): 0.19
     answer = 6828536
     assert result == answer, f"Calculated value {result} not equal to answer {answer}"
 
@@ -193,7 +193,7 @@ if __name__ == "__main__":
     result = sol.minimumMoves(nums, k=23886, maxChanges=15694)
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # Parallel improved PC time (s): 14.92
+    # Parallel improved PC time (s): 0.19
     answer = 33169542
     assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
@@ -203,6 +203,18 @@ if __name__ == "__main__":
     nums = [int(num) for num in nums[1:-3].split(",")]
     start = time.time()
     result = sol.minimumMoves(nums, k=13017, maxChanges=7423)
+    end = time.time()
+    print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # Parallel improved PC time (s): 0.16
+    answer = 15373116
+    assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
+
+    # Test 8
+    f = open("./Leetcode/3086_Minimum_Moves_Hard/example4.txt", "r")
+    nums = [line.strip() for line in f.readlines()][0]
+    nums = [int(num) for num in nums[1:-3].split(",")]
+    start = time.time()
+    result = sol.minimumMoves(nums, k=100000, maxChanges=0)
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
     # Parallel improved PC time (s): 4.32
