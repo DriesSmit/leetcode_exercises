@@ -101,14 +101,12 @@ class Solution(object):
                 left -= 1
                 should_check = cur_ones<k
                 cur_ones, moves = Solution.update_stats(nums_big, spawn, left, should_check, cur_ones, moves)
-                result = cur_ones==k
                 if self.check_end_condition(cur_ones, moves, k, rad): break
 
                 # Right case
                 right += 1
                 should_check = cur_ones<k
                 cur_ones, moves = Solution.update_stats(nums_big, spawn, right, should_check, cur_ones, moves)
-                result = cur_ones==k
                 if self.check_end_condition(cur_ones, moves, k, rad): break
         return int(np.min(moves[cur_ones==k]))
 # COPY ABOVE
@@ -138,14 +136,14 @@ if __name__ == "__main__":
 
     # Test 5
     f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
-    nums, k, maxChanges = [line.strip() for line in f.readlines()]
+    nums = [line.strip() for line in f.readlines()][0]
     nums = [int(num) for num in nums[1:-3].split(",")]
     start = time.time()
-    result = sol.minimumMoves(nums, k=int(k), maxChanges=int(maxChanges))
+    result = sol.minimumMoves(nums, k=3818, maxChanges=55)
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
     # Laptop: time (s):  137.39
-    # Parallel improved PC time (s): 3.63
+    # Parallel improved PC time (s): 2.68
     answer = 6828536
     assert result == answer, f"Calculated value {result} not equal to answer {answer}"
 
@@ -157,7 +155,7 @@ if __name__ == "__main__":
     result = sol.minimumMoves(nums, k=23886, maxChanges=15694)
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # Parallel improved PC time (s): 7.9
+    # Parallel improved PC time (s): 5.87
     answer = 33169542
     assert result == answer, f"Calculated value {result} not equal to answer {answer}"
 
@@ -169,7 +167,7 @@ if __name__ == "__main__":
     result = sol.minimumMoves(nums, k=13017, maxChanges=7423)
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # Parallel improved PC time (s): 4.32
+    # Parallel improved PC time (s): 4.16
     answer = 15373116
     assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 

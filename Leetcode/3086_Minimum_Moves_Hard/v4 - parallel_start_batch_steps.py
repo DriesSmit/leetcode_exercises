@@ -81,8 +81,8 @@ class Solution(object):
     @staticmethod
     def update_batched_stats(spawn, start, end, cur_ones, moves, k, cumsum_nums, cumsum_moves):
         update = cur_ones < k
-        print(f"start: {start}, . end: {end}")
-        print(f"update: {np.array(update, dtype=np.int32)}. cumsum: {cumsum_nums[end+1]-cumsum_nums[start]}, cummove: {cumsum_moves[end+1]-cumsum_moves[start] - (end-start)*(spawn)}")
+        # print(f"start: {start}, . end: {end}")
+        # print(f"update: {np.array(update, dtype=np.int32)}. cumsum: {cumsum_nums[end+1]-cumsum_nums[start]}, cummove: {cumsum_moves[end+1]-cumsum_moves[start] - (end-start)*(spawn)}")
         cur_ones += update * (cumsum_nums[end+1]-cumsum_nums[start])
         # TODO: Does this work in the negative case?
         moves += update * (cumsum_moves[end+1]-cumsum_moves[start] - (end-start)*(spawn))
@@ -116,8 +116,8 @@ class Solution(object):
         if not done:
             for rad in range(2, len(nums)):
                 # The minimum step size that will overshoot
-                min_step_size = np.max(1, int(np.min(k-cur_ones)/2))
-                print("min_step_size: ", min_step_size)
+                min_step_size = max(1, int(np.min(k-cur_ones)/2))
+                # print("min_step_size: ", min_step_size)
 
                 # Left case
                 next_left = np.maximum(0, left - min_step_size)
@@ -125,8 +125,8 @@ class Solution(object):
                 left = next_left
                 if self.check_end_condition(cur_ones, moves, k, rad): break
 
-                print(f"After left. cur_ones: {cur_ones}, moves: {moves}, left: {left}, right: {right}")
-                exit()
+                # print(f"After left. cur_ones: {cur_ones}, moves: {moves}, left: {left}, right: {right}")
+                # exit()
 
                 # Right case
                 next_right = np.minimum(len(nums)-1, right + min_step_size)
@@ -134,8 +134,8 @@ class Solution(object):
                 right = next_right
                 if self.check_end_condition(cur_ones, moves, k, rad): break
 
-                print(f"After right. cur_ones: {cur_ones}, moves: {moves}, left: {left}, right: {right}")
-                exit()
+                # print(f"After right. cur_ones: {cur_ones}, moves: {moves}, left: {left}, right: {right}")
+                # exit()
         return int(np.min(moves[cur_ones==k]))
 # COPY ABOVE
 
@@ -143,9 +143,9 @@ if __name__ == "__main__":
     sol = Solution()
 
     # Test 1
-    result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], k=3, maxChanges=1)
-    answer = 3
-    assert result == answer, f"{result} not equal to {answer}"
+    # result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], k=3, maxChanges=1)
+    # answer = 3
+    # assert result == answer, f"{result} not equal to {answer}"
 
     # Test 2
     # result = sol.minimumMoves([0,0,0,0], k=2, maxChanges=3)
@@ -163,17 +163,17 @@ if __name__ == "__main__":
     # assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 5
-    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
-    # nums, k, maxChanges = [line.strip() for line in f.readlines()]
-    # nums = [int(num) for num in nums[1:-3].split(",")]
-    # start = time.time()
-    # result = sol.minimumMoves(nums, k=int(k), maxChanges=int(maxChanges))
-    # end = time.time()
-    # print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # # Laptop: time (s):  137.39
-    # # Parallel improved PC time (s): 6.7
-    # answer = 6828536
-    # assert result == answer, f"Calculated value {result} not equal to answer {answer}"
+    f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
+    nums = [line.strip() for line in f.readlines()][0]
+    nums = [int(num) for num in nums[1:-3].split(",")]
+    start = time.time()
+    result = sol.minimumMoves(nums, k=3818, maxChanges=55)
+    end = time.time()
+    print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # Laptop: time (s):  137.39
+    # Parallel improved PC time (s): 3.63
+    answer = 6828536
+    assert result == answer, f"Calculated value {result} not equal to answer {answer}"
 
     # Test 6
     # f = open("./Leetcode/3086_Minimum_Moves_Hard/example2.txt", "r")
