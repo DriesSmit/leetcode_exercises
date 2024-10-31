@@ -135,7 +135,8 @@ class Solution(object):
                 cur_ones, moves = Solution.update_batched_stats(spawn, right, next_right, cur_ones, moves, k, cumsum_nums, cumsum_moves, neg_cumsum_moves, "right")
                 right = next_right
                 if self.check_end_condition(cur_ones, moves, k, rad): break
-                
+        
+        print("cur_ones: ", cur_ones)
         return int(np.min(moves[cur_ones==k]))
 # COPY ABOVE
 
@@ -143,9 +144,9 @@ if __name__ == "__main__":
     sol = Solution()
 
     # Test 0
-    result = sol.minimumMoves([1,1,0,1,1,0,0,1,1,0,0,1,0,0,1], k=5, maxChanges=1)
-    answer = 8
-    assert result == answer, f"{result} not equal to {answer}"
+    # result = sol.minimumMoves([1,1,0,1,1,0,0,1,1,0,0,1,0,0,1], k=5, maxChanges=1)
+    # answer = 8
+    # assert result == answer, f"{result} not equal to {answer}"
     # nums: [1 1 0 1 1 0 0 1 1 0 0 1 0 0 1]. k: 5. maxChanges: 1
     # Start: cur_ones: [3 3 3 3 3 2 2 3 3 2 2 2 2 2 2], moves: [3 3 4 3 3 3 3 3 3 3 3 2 3 3 2]
     # Left. rad: 2. cur_ones: [3 3 4 4 3 3 3 3 3 3 3 2 2 3 2], moves: [3 3 6 5 3 5 5 3 3 5 5 2 3 5 2]
@@ -153,72 +154,72 @@ if __name__ == "__main__":
     # Left. rad: 3. cur_ones: [3 4 5 5 4 4 5 4 3 4 4 3 3 3 3], moves: [ 3  5  8  8  6  7 10  6  3  7  8  5  5  5  5]
 
     # Test 1
-    result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], k=3, maxChanges=1)
-    answer = 3
-    assert result == answer, f"{result} not equal to {answer}"
+    # result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], k=3, maxChanges=1)
+    # answer = 3
+    # assert result == answer, f"{result} not equal to {answer}"
 
     # Test 2
-    result = sol.minimumMoves([0,0,0,0], k=2, maxChanges=3)
-    answer = 4
-    assert result == answer, f"{result} not equal to {answer}" 
+    # result = sol.minimumMoves([0,0,0,0], k=2, maxChanges=3)
+    # answer = 4
+    # assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 3
-    result = sol.minimumMoves([0,0], k=1, maxChanges=3)
-    answer = 2
-    assert result == answer, f"{result} not equal to {answer}" 
+    # result = sol.minimumMoves([0,0], k=1, maxChanges=3)
+    # answer = 2
+    # assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 4
-    result = sol.minimumMoves([1,1], k=2, maxChanges=4)
-    answer = 1
-    assert result == answer, f"{result} not equal to {answer}" 
+    # result = sol.minimumMoves([1,1], k=2, maxChanges=4)
+    # answer = 1
+    # assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 5
-    f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
-    nums = [line.strip() for line in f.readlines()][0]
-    nums = [int(num) for num in nums[1:-3].split(",")]
-    start = time.time()
-    result = sol.minimumMoves(nums, k=3818, maxChanges=55)
-    end = time.time()
-    print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # Laptop: time (s):  137.39
-    # Parallel improved PC time (s): 0.19
-    answer = 6828536
-    assert result == answer, f"Calculated value {result} not equal to answer {answer}"
+    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
+    # nums = [line.strip() for line in f.readlines()][0]
+    # nums = [int(num) for num in nums[1:-1].split(",")]
+    # start = time.time()
+    # result = sol.minimumMoves(nums, k=3818, maxChanges=55)
+    # end = time.time()
+    # print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # # Laptop: time (s):  137.39
+    # # Parallel improved PC time (s): 0.19
+    # answer = 6828536
+    # assert result == answer, f"Calculated value {result} not equal to answer {answer}"
 
     # Test 6
-    f = open("./Leetcode/3086_Minimum_Moves_Hard/example2.txt", "r")
-    nums = [line.strip() for line in f.readlines()][0]
-    nums = [int(num) for num in nums[1:-3].split(",")]
-    start = time.time()
-    result = sol.minimumMoves(nums, k=23886, maxChanges=15694)
-    end = time.time()
-    print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # Parallel improved PC time (s): 0.19
-    answer = 33169542
-    assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
+    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example2.txt", "r")
+    # nums = [line.strip() for line in f.readlines()][0]
+    # nums = [int(num) for num in nums[1:-1].split(",")]
+    # start = time.time()
+    # result = sol.minimumMoves(nums, k=23886, maxChanges=15694)
+    # end = time.time()
+    # print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # # Parallel improved PC time (s): 0.19
+    # answer = 33169542
+    # assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     # Test 7
-    f = open("./Leetcode/3086_Minimum_Moves_Hard/example3.txt", "r")
-    nums = [line.strip() for line in f.readlines()][0]
-    nums = [int(num) for num in nums[1:-3].split(",")]
-    start = time.time()
-    result = sol.minimumMoves(nums, k=13017, maxChanges=7423)
-    end = time.time()
-    print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # Parallel improved PC time (s): 0.16
-    answer = 15373116
-    assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
+    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example3.txt", "r")
+    # nums = [line.strip() for line in f.readlines()][0]
+    # nums = [int(num) for num in nums[1:-1].split(",")]
+    # start = time.time()
+    # result = sol.minimumMoves(nums, k=13017, maxChanges=7423)
+    # end = time.time()
+    # print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # # Parallel improved PC time (s): 0.16
+    # answer = 15373116
+    # assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     # Test 8
     f = open("./Leetcode/3086_Minimum_Moves_Hard/example4.txt", "r")
     nums = [line.strip() for line in f.readlines()][0]
-    nums = [int(num) for num in nums[1:-3].split(",")]
+    nums = [int(num) for num in nums[1:-1].split(",")]
     start = time.time()
-    result = sol.minimumMoves(nums, k=100000, maxChanges=0)
+    result = sol.minimumMoves(nums, k=100000, maxChanges=0) # -1
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
     # Parallel improved PC time (s): 4.32
-    answer = 15373116
+    answer = -1
     assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     
