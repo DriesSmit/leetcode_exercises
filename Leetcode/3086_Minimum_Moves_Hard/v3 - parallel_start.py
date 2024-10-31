@@ -26,7 +26,6 @@ import time
 
 
 # COPY BELOW
-# TODO: Keep going even if one has hit the k limit. There might still be better moves.
 import numpy as np
 class Solution(object):
     @staticmethod

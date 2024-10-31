@@ -37,15 +37,12 @@ import numpy as np
 class Solution(object):
     @staticmethod
     def handle_start(nums, spawn, left, right, cur_ones, moves, k, maxChanges):
-        done = False
-
         # Check first left
         next_left = np.maximum(0, left - 1)
         should_check = (left!=next_left) * (cur_ones<k)
         cur_ones, moves = Solution.update_stats(nums, spawn, next_left, should_check, cur_ones, moves)
         left = next_left
-        if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
-            done = True
+        done = Solution.check_end_condition(cur_ones, moves)
 
         if not done:
             # Right case
@@ -53,16 +50,21 @@ class Solution(object):
             should_check = (right!=next_right) * (cur_ones<k)
             cur_ones, moves = Solution.update_stats(nums, spawn, next_right, should_check, cur_ones, moves)
             right = next_right
-            if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
-                done = True
+            done = Solution.check_end_condition(cur_ones, moves)
 
         if not done:
             # Address the maxChanges case
             num_changes = np.minimum(k-cur_ones, maxChanges)
             cur_ones += num_changes
             moves += 2*num_changes # It takes two moves to use a change move
-
         return done, cur_ones, moves, left, right
+
+    @staticmethod
+    def check_end_condition(cur_ones, moves):
+        result = cur_ones==k
+        if np.all(result) or (np.sum(result) > 0 and np.all(moves >= np.min(moves[result]))):
+            return True
+        return False
 
     @staticmethod
     def update_stats(nums, spawn, locs, should_check, cur_ones, moves):
@@ -71,11 +73,12 @@ class Solution(object):
         return cur_ones, moves
 
     @staticmethod
-    def update_batched_stats(nums, spawn, start, end, cur_ones, moves, k):
+    def update_batched_stats(nums, spawn, start, end, cur_ones, moves, k, cumsum_nums, cumsum_moves):
+        # TODO: Update this
         update = k < cur_ones
-        cur_ones += update * np.sum(nums[start:end], axis=-1)
-        moves += update * np.sum(np.abs(spawn-np.arange(start,end)), axis=-1)
-
+        cur_ones += update * (cumsum_nums[end+1]-cumsum_nums[start])
+        # TODO: Does this work in the negative case?
+        moves += update * (cumsum_moves[end+1]-cumsum_moves[start] - (end-start)*(spawn))
         return cur_ones, moves
 
     def minimumMoves(self, nums, k, maxChanges):
@@ -94,27 +97,27 @@ class Solution(object):
         # Add premove start values
         cur_ones = np.array(nums[spawn], dtype=np.int32) # TODO: Why is this faster with spawn that without?
 
+        # Setup cumsums
+        cumsum_nums = np.cumsum(nums)
+        cumsum_moves = np.cumsum(nums*(spawn+1))
+
         # Handle the start seperately to make the rest of the code implementation simpler. 
         done, cur_ones, moves, left, right = Solution.handle_start(nums, spawn, left, right, cur_ones, moves, k, maxChanges)
+        while not done:
+            # The minimum step size that will overshoot
+            min_step_size = np.max(1, int(np.min(k-cur_ones)/2))
 
-        if not done:
-            for _ in range(2, len(nums)):
-                # The minimum step size that will overshoot
-                min_step_size = np.max(1, int(np.min(k-cur_ones)/2))
+            # Left case
+            next_left = np.maximum(0, left - min_step_size)
+            cur_ones, moves = Solution.update_batched_stats(nums, spawn, next_left, left, cur_ones, moves, k, cumsum_nums, cumsum_moves)
+            left = next_left
+            if Solution.check_end_condition(cur_ones, moves): break
 
-                # Left case
-                next_left = np.maximum(0, left - min_step_size)
-                cur_ones, moves = Solution.update_batched_stats(nums, spawn, next_left, left, cur_ones, moves, k)
-                left = next_left
-                if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
-                    break
-
-                # Right case
-                next_right = np.minimum(len(nums)-1, right + min_step_size)
-                cur_ones, moves = Solution.update_batched_stats(nums, spawn, right, next_right, cur_ones, moves, k)
-                right = next_right
-                if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
-                    break
+            # Right case
+            next_right = np.minimum(len(nums)-1, right + min_step_size)
+            cur_ones, moves = Solution.update_batched_stats(nums, spawn, right, next_right, cur_ones, moves, k, cumsum_nums, cumsum_moves)
+            right = next_right
+            if Solution.check_end_condition(cur_ones, moves): break
         return int(np.min(moves[cur_ones==k]))
 # COPY ABOVE
 
