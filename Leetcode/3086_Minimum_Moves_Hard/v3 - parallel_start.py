@@ -159,6 +159,18 @@ if __name__ == "__main__":
     print("result: ", result, ". Time (s): ", round(end-start, 2))
     # Parallel improved PC time (s): 7.9
     answer = 33169542
+    assert result == answer, f"Calculated value {result} not equal to answer {answer}"
+
+    # Test 7
+    f = open("./Leetcode/3086_Minimum_Moves_Hard/example3.txt", "r")
+    nums = [line.strip() for line in f.readlines()][0]
+    nums = [int(num) for num in nums[1:-3].split(",")]
+    start = time.time()
+    result = sol.minimumMoves(nums, k=13017, maxChanges=7423)
+    end = time.time()
+    print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # Parallel improved PC time (s): 4.32
+    answer = 15373116
     assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     
