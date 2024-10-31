@@ -31,8 +31,8 @@ import numpy as np
 class Solution(object):
     @staticmethod
     def check_end_condition(cur_ones, moves, k, rad):
-        # TODO: One can potentially squeece a little more juice out of this by using a beter
-        # min possible score estimate.
+        # TODO: One could potentially squeeze out a bit more performance by improving the estimate 
+        # for the minimum possible score, which may reduce unnecessary computations.
         equal = cur_ones==k
         less = cur_ones<k
         result_sum = np.sum(equal)
