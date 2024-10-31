@@ -85,11 +85,19 @@ class Solution(object):
         cur_ones += update * (cumsum_nums[end+1]-cumsum_nums[start])
         
         if side == "left":
-            r_start = len(moves) - start
-            r_end = len(moves) - end
+            r_start = len(moves) - start - 1
+            r_end = len(moves) - end - 1
             r_spawn = len(moves) -spawn
+
+            print(f"r_start: {r_start}. r_end: {r_end}")
+            print("Cum sum: ", neg_cumsum_moves[r_end+1]-neg_cumsum_moves[r_start])
             moves += update * (neg_cumsum_moves[end+1]-neg_cumsum_moves[start] - (r_start)*(r_end-r_start) + (r_start-r_spawn)*(r_end-r_start))
+
+            print("moves: ", moves)
+            exit()
         else:
+            print("Why here.")
+            exit()
             moves += update * (cumsum_moves[end+1]-cumsum_moves[start] - (start)*(end-start) + (start-spawn)*(end-start))
 
         return cur_ones, moves
@@ -113,7 +121,8 @@ class Solution(object):
         # Setup cumsums
         cumsum_nums = np.concat([[0], np.cumsum(nums)])
         cumsum_moves = np.concat([[0], np.cumsum(nums*(spawn+1))])
-        neg_cumsum_moves = np.concat([[0], np.cumsum(nums[::-1]*(spawn+1))])[::-1]
+        neg_cumsum_moves = np.concat([[0], np.cumsum(nums[::-1]*(spawn+1))])
+        print(f"len: {neg_cumsum_moves}")
 
         # Handle the start seperately to make the rest of the code implementation simpler. 
         print(f"Before start. nums: {np.array(nums, np.int32)}, cumsum_nums: {cumsum_nums}, cumsum_moves: {cumsum_moves} , neg_cumsum_moves: {neg_cumsum_moves}")
