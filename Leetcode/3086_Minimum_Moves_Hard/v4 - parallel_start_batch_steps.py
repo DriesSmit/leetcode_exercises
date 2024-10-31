@@ -130,9 +130,11 @@ class Solution(object):
         print(f"After start. cur_ones: {cur_ones}, moves: {moves}, left: {left}, right: {right}")
 
         if not done:
-            for rad in range(2, len(nums)):
+            rad = 2
+            while rad < len(nums):
                 # The minimum step size that will overshoot
                 min_step_size = max(1, int(np.min(k-cur_ones)/2))
+                rad += min_step_size
                 # print("min_step_size: ", min_step_size)
 
                 # Left case
