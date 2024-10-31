@@ -32,7 +32,6 @@ import time
 
 
 # COPY BELOW
-# TODO: Keep going even if one has hit the k limit. There might still be better moves.
 import numpy as np
 class Solution(object):
     @staticmethod
@@ -82,23 +81,15 @@ class Solution(object):
     def update_batched_stats(spawn, start, end, cur_ones, moves, k, cumsum_nums, cumsum_moves, neg_cumsum_moves, side):
         # Note: Start is always the closest point to spawn and end further away or equal.
         update = cur_ones < k
-        cur_ones += update * (cumsum_nums[end+1]-cumsum_nums[start])
-        
         if side == "left":
-            r_start = len(moves) - start - 1
-            r_end = len(moves) - end - 1
-            r_spawn = len(moves) -spawn
-
-            print(f"r_start: {r_start}. r_end: {r_end}")
-            print("Cum sum: ", neg_cumsum_moves[r_end+1]-neg_cumsum_moves[r_start])
-            moves += update * (neg_cumsum_moves[end+1]-neg_cumsum_moves[start] - (r_start)*(r_end-r_start) + (r_start-r_spawn)*(r_end-r_start))
-
-            print("moves: ", moves)
-            exit()
+            r_spawn = len(moves) - spawn
+            sum = cumsum_nums[start]-cumsum_nums[end]
+            cur_ones += update * sum
+            moves += update * (neg_cumsum_moves[end]-neg_cumsum_moves[start] -r_spawn*sum)
         else:
-            print("Why here.")
-            exit()
-            moves += update * (cumsum_moves[end+1]-cumsum_moves[start] - (start)*(end-start) + (start-spawn)*(end-start))
+            sum = cumsum_nums[end+1]-cumsum_nums[start+1]
+            cur_ones += update * sum
+            moves += update * (cumsum_moves[end+1]-cumsum_moves[start+1]-(spawn+1)*sum)
 
         return cur_ones, moves
 
@@ -121,21 +112,17 @@ class Solution(object):
         # Setup cumsums
         cumsum_nums = np.concat([[0], np.cumsum(nums)])
         cumsum_moves = np.concat([[0], np.cumsum(nums*(spawn+1))])
-        neg_cumsum_moves = np.concat([[0], np.cumsum(nums[::-1]*(spawn+1))])
-        print(f"len: {neg_cumsum_moves}")
-
+        neg_cumsum_moves = np.concat([[0], np.cumsum((nums[::-1]*(spawn+1)))])[::-1]
+       
         # Handle the start seperately to make the rest of the code implementation simpler. 
-        print(f"Before start. nums: {np.array(nums, np.int32)}, cumsum_nums: {cumsum_nums}, cumsum_moves: {cumsum_moves} , neg_cumsum_moves: {neg_cumsum_moves}")
         done, cur_ones, moves, left, right = Solution.handle_start(nums, spawn, left, right, cur_ones, moves, k, maxChanges)
-        print(f"After start. cur_ones: {cur_ones}, moves: {moves}, left: {left}, right: {right}")
 
         if not done:
-            rad = 2
+            rad = 1
             while rad < len(nums):
                 # The minimum step size that will overshoot
                 min_step_size = max(1, int(np.min(k-cur_ones)/2))
                 rad += min_step_size
-                # print("min_step_size: ", min_step_size)
 
                 # Left case
                 next_left = np.maximum(0, left - min_step_size)
@@ -143,17 +130,12 @@ class Solution(object):
                 left = next_left
                 if self.check_end_condition(cur_ones, moves, k, rad): break
 
-                # print(f"After left. cur_ones: {cur_ones}, moves: {moves}, left: {left}, right: {right}")
-                # exit()
-
                 # Right case
                 next_right = np.minimum(len(nums)-1, right + min_step_size)
                 cur_ones, moves = Solution.update_batched_stats(spawn, right, next_right, cur_ones, moves, k, cumsum_nums, cumsum_moves, neg_cumsum_moves, "right")
                 right = next_right
                 if self.check_end_condition(cur_ones, moves, k, rad): break
-
-                # print(f"After right. cur_ones: {cur_ones}, moves: {moves}, left: {left}, right: {right}")
-                # exit()
+                
         return int(np.min(moves[cur_ones==k]))
 # COPY ABOVE
 
@@ -164,65 +146,67 @@ if __name__ == "__main__":
     result = sol.minimumMoves([1,1,0,1,1,0,0,1,1,0,0,1,0,0,1], k=5, maxChanges=1)
     answer = 8
     assert result == answer, f"{result} not equal to {answer}"
-    # Left. rad: 2, cur_ones: [3 3 4 4 3 3 3 3 3 3 3 2 2 3 2], moves: [3 3 6 5 3 5 5 3 3 5 5 2 3 5 2]
-    # Right. rad: 2, cur_ones: [3 4 5 4 3 4 4 3 3 4 3 2 3 3 2], moves: [3 5 8 5 3 7 7 3 3 7 5 2 5 5 2]
-    # Left. rad: 3, cur_ones: [3 4 5 5 4 4 5 4 3 4 4 3 3 3 3], moves: [ 3  5  8  8  6  7 10  6  3  7  8  5  5  5  5]
+    # nums: [1 1 0 1 1 0 0 1 1 0 0 1 0 0 1]. k: 5. maxChanges: 1
+    # Start: cur_ones: [3 3 3 3 3 2 2 3 3 2 2 2 2 2 2], moves: [3 3 4 3 3 3 3 3 3 3 3 2 3 3 2]
+    # Left. rad: 2. cur_ones: [3 3 4 4 3 3 3 3 3 3 3 2 2 3 2], moves: [3 3 6 5 3 5 5 3 3 5 5 2 3 5 2]
+    # Right. rad: 2. cur_ones: [3 4 5 4 3 4 4 3 3 4 3 2 3 3 2], moves: [3 5 8 5 3 7 7 3 3 7 5 2 5 5 2]
+    # Left. rad: 3. cur_ones: [3 4 5 5 4 4 5 4 3 4 4 3 3 3 3], moves: [ 3  5  8  8  6  7 10  6  3  7  8  5  5  5  5]
 
     # Test 1
-    # result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], k=3, maxChanges=1)
-    # answer = 3
-    # assert result == answer, f"{result} not equal to {answer}"
+    result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], k=3, maxChanges=1)
+    answer = 3
+    assert result == answer, f"{result} not equal to {answer}"
 
     # Test 2
-    # result = sol.minimumMoves([0,0,0,0], k=2, maxChanges=3)
-    # answer = 4
-    # assert result == answer, f"{result} not equal to {answer}" 
+    result = sol.minimumMoves([0,0,0,0], k=2, maxChanges=3)
+    answer = 4
+    assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 3
-    # result = sol.minimumMoves([0,0], k=1, maxChanges=3)
-    # answer = 2
-    # assert result == answer, f"{result} not equal to {answer}" 
+    result = sol.minimumMoves([0,0], k=1, maxChanges=3)
+    answer = 2
+    assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 4
-    # result = sol.minimumMoves([1,1], k=2, maxChanges=4)
-    # answer = 1
-    # assert result == answer, f"{result} not equal to {answer}" 
+    result = sol.minimumMoves([1,1], k=2, maxChanges=4)
+    answer = 1
+    assert result == answer, f"{result} not equal to {answer}" 
 
     # Test 5
-    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
-    # nums = [line.strip() for line in f.readlines()][0]
-    # nums = [int(num) for num in nums[1:-3].split(",")]
-    # start = time.time()
-    # result = sol.minimumMoves(nums, k=3818, maxChanges=55)
-    # end = time.time()
-    # print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # # Laptop: time (s):  137.39
-    # # Parallel improved PC time (s): 3.63
-    # answer = 6828536
-    # assert result == answer, f"Calculated value {result} not equal to answer {answer}"
+    f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
+    nums = [line.strip() for line in f.readlines()][0]
+    nums = [int(num) for num in nums[1:-3].split(",")]
+    start = time.time()
+    result = sol.minimumMoves(nums, k=3818, maxChanges=55)
+    end = time.time()
+    print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # Laptop: time (s):  137.39
+    # Parallel improved PC time (s): 3.63
+    answer = 6828536
+    assert result == answer, f"Calculated value {result} not equal to answer {answer}"
 
     # Test 6
-    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example2.txt", "r")
-    # nums = [line.strip() for line in f.readlines()][0]
-    # nums = [int(num) for num in nums[1:-3].split(",")]
-    # start = time.time()
-    # result = sol.minimumMoves(nums, k=23886, maxChanges=15694)
-    # end = time.time()
-    # print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # # Parallel improved PC time (s): 14.92
-    # answer = 33169542
-    # assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
+    f = open("./Leetcode/3086_Minimum_Moves_Hard/example2.txt", "r")
+    nums = [line.strip() for line in f.readlines()][0]
+    nums = [int(num) for num in nums[1:-3].split(",")]
+    start = time.time()
+    result = sol.minimumMoves(nums, k=23886, maxChanges=15694)
+    end = time.time()
+    print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # Parallel improved PC time (s): 14.92
+    answer = 33169542
+    assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     # Test 7
-    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example3.txt", "r")
-    # nums = [line.strip() for line in f.readlines()][0]
-    # nums = [int(num) for num in nums[1:-3].split(",")]
-    # start = time.time()
-    # result = sol.minimumMoves(nums, k=13017, maxChanges=7423)
-    # end = time.time()
-    # print("result: ", result, ". Time (s): ", round(end-start, 2))
-    # # Parallel improved PC time (s): 4.32
-    # answer = 15373116
-    # assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
+    f = open("./Leetcode/3086_Minimum_Moves_Hard/example3.txt", "r")
+    nums = [line.strip() for line in f.readlines()][0]
+    nums = [int(num) for num in nums[1:-3].split(",")]
+    start = time.time()
+    result = sol.minimumMoves(nums, k=13017, maxChanges=7423)
+    end = time.time()
+    print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # Parallel improved PC time (s): 4.32
+    answer = 15373116
+    assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     
