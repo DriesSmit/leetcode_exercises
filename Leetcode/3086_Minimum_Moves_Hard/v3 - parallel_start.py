@@ -26,6 +26,7 @@ import time
 
 
 # COPY BELOW
+# TODO: Keep going even if one has hit the k limit. There might still be better moves.
 import numpy as np
 class Solution(object):
     @staticmethod
@@ -54,6 +55,8 @@ class Solution(object):
             num_changes = np.minimum(k-cur_ones, maxChanges)
             cur_ones += num_changes
             moves += 2*num_changes # It takes two moves to use a change move
+            if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
+                done = True
 
 
         return done, cur_ones, moves, left, right
