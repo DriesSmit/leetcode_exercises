@@ -79,13 +79,19 @@ class Solution(object):
         return cur_ones, moves
 
     @staticmethod
-    def update_batched_stats(spawn, start, end, cur_ones, moves, k, cumsum_nums, cumsum_moves):
+    def update_batched_stats(spawn, start, end, cur_ones, moves, k, cumsum_nums, cumsum_moves, neg_cumsum_moves, side):
+        # Note: Start is always the closest point to spawn and end further away or equal.
         update = cur_ones < k
-        # print(f"start: {start}, . end: {end}")
-        # print(f"update: {np.array(update, dtype=np.int32)}. cumsum: {cumsum_nums[end+1]-cumsum_nums[start]}, cummove: {cumsum_moves[end+1]-cumsum_moves[start] - (end-start)*(spawn)}")
         cur_ones += update * (cumsum_nums[end+1]-cumsum_nums[start])
-        # TODO: Does this work in the negative case?
-        moves += update * (cumsum_moves[end+1]-cumsum_moves[start] - (end-start)*(spawn))
+        
+        if side == "left":
+            r_start = len(moves) - start
+            r_end = len(moves) - end
+            r_spawn = len(moves) -spawn
+            moves += update * (neg_cumsum_moves[end+1]-neg_cumsum_moves[start] - (r_start)*(r_end-r_start) + (r_start-r_spawn)*(r_end-r_start))
+        else:
+            moves += update * (cumsum_moves[end+1]-cumsum_moves[start] - (start)*(end-start) + (start-spawn)*(end-start))
+
         return cur_ones, moves
 
     def minimumMoves(self, nums, k, maxChanges):
@@ -107,9 +113,10 @@ class Solution(object):
         # Setup cumsums
         cumsum_nums = np.concat([[0], np.cumsum(nums)])
         cumsum_moves = np.concat([[0], np.cumsum(nums*(spawn+1))])
+        neg_cumsum_moves = np.concat([[0], np.cumsum(nums[::-1]*(spawn+1))])[::-1]
 
         # Handle the start seperately to make the rest of the code implementation simpler. 
-        print(f"Before start. nums: {np.array(nums, np.int32)}, cumsum_nums: {cumsum_nums}, cumsum_moves: {cumsum_moves}")
+        print(f"Before start. nums: {np.array(nums, np.int32)}, cumsum_nums: {cumsum_nums}, cumsum_moves: {cumsum_moves} , neg_cumsum_moves: {neg_cumsum_moves}")
         done, cur_ones, moves, left, right = Solution.handle_start(nums, spawn, left, right, cur_ones, moves, k, maxChanges)
         print(f"After start. cur_ones: {cur_ones}, moves: {moves}, left: {left}, right: {right}")
 
@@ -121,7 +128,7 @@ class Solution(object):
 
                 # Left case
                 next_left = np.maximum(0, left - min_step_size)
-                cur_ones, moves = Solution.update_batched_stats(spawn, next_left, left, cur_ones, moves, k, cumsum_nums, cumsum_moves)
+                cur_ones, moves = Solution.update_batched_stats(spawn, left, next_left, cur_ones, moves, k, cumsum_nums, cumsum_moves, neg_cumsum_moves, "left")
                 left = next_left
                 if self.check_end_condition(cur_ones, moves, k, rad): break
 
@@ -130,7 +137,7 @@ class Solution(object):
 
                 # Right case
                 next_right = np.minimum(len(nums)-1, right + min_step_size)
-                cur_ones, moves = Solution.update_batched_stats(spawn, right, next_right, cur_ones, moves, k, cumsum_nums, cumsum_moves)
+                cur_ones, moves = Solution.update_batched_stats(spawn, right, next_right, cur_ones, moves, k, cumsum_nums, cumsum_moves, neg_cumsum_moves, "right")
                 right = next_right
                 if self.check_end_condition(cur_ones, moves, k, rad): break
 
