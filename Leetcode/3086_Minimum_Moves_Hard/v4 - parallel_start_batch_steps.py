@@ -211,15 +211,27 @@ if __name__ == "__main__":
     # assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     # # Test 8
-    f = open("./Leetcode/3086_Minimum_Moves_Hard/example4.txt", "r")
+    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example4.txt", "r")
+    # nums = [line.strip() for line in f.readlines()][0]
+    # nums = [int(num) for num in nums[1:-1].split(",")]
+    # start = time.time()
+    # result = sol.minimumMoves(nums, k=100000, maxChanges=0) # -1
+    # end = time.time()
+    # print("result: ", result, ". Time (s): ", round(end-start, 2))
+    # # Parallel improved PC time (s): 4.32
+    # answer = 2500000000
+    # assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
+
+    # Test 9
+    f = open("./Leetcode/3086_Minimum_Moves_Hard/example5.txt", "r")
     nums = [line.strip() for line in f.readlines()][0]
     nums = [int(num) for num in nums[1:-1].split(",")]
     start = time.time()
-    result = sol.minimumMoves(nums, k=100000, maxChanges=0) # -1
+    result = sol.minimumMoves(nums, k=100000, maxChanges=30000) # -1
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
     # Parallel improved PC time (s): 4.32
-    answer = 2500000000
+    answer = 2275060000
     assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     
