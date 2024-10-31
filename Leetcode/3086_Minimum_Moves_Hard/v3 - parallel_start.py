@@ -30,16 +30,23 @@ import time
 import numpy as np
 class Solution(object):
     @staticmethod
+    def check_end_condition(cur_ones, moves, k, rad):
+        # TODO: One can potentially squeece a little more juice out of this by using a beter
+        # min possible score estimate.
+        equal = cur_ones==k
+        less = cur_ones<k
+        result_sum = np.sum(equal)
+        if result_sum > 0 and np.all((np.min(moves[equal])-moves[less]) <= rad*(k - cur_ones[less])):
+            return True
+        return False
+    @staticmethod
     def handle_start(nums, spawn, left, right, cur_ones, moves, k, maxChanges):
-        done = False
-
         # Check first left
         next_left = np.maximum(0, left - 1)
         should_check = (left!=next_left) * (cur_ones<k)
         cur_ones, moves = Solution.update_stats(nums, spawn, next_left, should_check, cur_ones, moves)
         left = next_left
-        if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
-            done = True
+        done = Solution.check_end_condition(cur_ones, moves, k, 1)
 
         if not done:
             # Right case
@@ -47,16 +54,14 @@ class Solution(object):
             should_check = (right!=next_right) * (cur_ones<k)
             cur_ones, moves = Solution.update_stats(nums, spawn, next_right, should_check, cur_ones, moves)
             right = next_right
-            if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
-                done = True
+            done = Solution.check_end_condition(cur_ones, moves, k, 1)
 
         if not done:
             # Address the maxChanges case
             num_changes = np.minimum(k-cur_ones, maxChanges)
             cur_ones += num_changes
             moves += 2*num_changes # It takes two moves to use a change move
-            if np.all(cur_ones==k) or (np.sum(cur_ones==k) > 0 and np.all(moves >= np.min(moves[cur_ones==k]))):
-                done = True
+            done = Solution.check_end_condition(cur_ones, moves, k, 1)
 
 
         return done, cur_ones, moves, left, right
@@ -90,23 +95,21 @@ class Solution(object):
         done, cur_ones, moves, left, right = Solution.handle_start(nums, spawn, left, right, cur_ones, moves, k, maxChanges)
 
         if not done:
-            for _ in range(2, len(nums)):
+            for rad in range(2, len(nums)):
                 # TODO: Update this to multistep increases if needed
                 # Left case
                 left -= 1
                 should_check = cur_ones<k
                 cur_ones, moves = Solution.update_stats(nums_big, spawn, left, should_check, cur_ones, moves)
                 result = cur_ones==k
-                if np.all(result) or (np.any(result) > 0 and np.all(moves >= np.min(moves[result]))):
-                    break
+                if self.check_end_condition(cur_ones, moves, k, rad): break
 
                 # Right case
                 right += 1
                 should_check = cur_ones<k
                 cur_ones, moves = Solution.update_stats(nums_big, spawn, right, should_check, cur_ones, moves)
                 result = cur_ones==k
-                if np.all(result) or (np.any(result) > 0 and np.all(moves >= np.min(moves[result]))):
-                    break
+                if self.check_end_condition(cur_ones, moves, k, rad): break
         return int(np.min(moves[cur_ones==k]))
 # COPY ABOVE
 
