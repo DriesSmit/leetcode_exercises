@@ -36,12 +36,13 @@ import numpy as np
 class Solution(object):
     @staticmethod
     def check_end_condition(cur_ones, moves, k, rad):
-        # TODO: One could potentially squeeze out a bit more performance by improving the estimate 
-        # for the minimum possible score, which may reduce unnecessary computations.
         equal = cur_ones==k
         less = cur_ones<k
         result_sum = np.sum(equal)
-        if result_sum > 0 and np.all((np.min(moves[equal])-moves[less]) <= rad*(k - cur_ones[less])):
+        # Estimate the minimum moves required using a arithmatic sequence.
+        # TODO: Move this inside the if
+        n = k - cur_ones[less]
+        if result_sum > 0 and np.all((np.min(moves[equal])-moves[less]) <= (n/2)*(2*rad+(n-1))):
             return True
         return False
     
@@ -101,13 +102,13 @@ class Solution(object):
         :rtype: int
         """
         nums = np.array(nums, np.bool)
-        spawn = np.arange(len(nums), dtype=np.int32)
-        left = np.arange(len(nums), dtype=np.int32)
-        right = np.arange(len(nums), dtype=np.int32)
-        moves = np.zeros(len(nums), dtype=np.int32) # TODO: Is moves required or can it be calculated at the end?
+        spawn = np.arange(len(nums), dtype=np.int64)
+        left = np.arange(len(nums), dtype=np.int64)
+        right = np.arange(len(nums), dtype=np.int64)
+        moves = np.zeros(len(nums), dtype=np.int64) # TODO: Is moves required or can it be calculated at the end?
 
         # Add premove start values
-        cur_ones = np.array(nums[spawn], dtype=np.int32) # TODO: Why is this faster with spawn that without?
+        cur_ones = np.array(nums[spawn], dtype=np.int64) # TODO: Why is this faster with spawn that without?
 
         # Setup cumsums
         cumsum_nums = np.concat([[0], np.cumsum(nums)])
@@ -136,44 +137,43 @@ class Solution(object):
                 right = next_right
                 if self.check_end_condition(cur_ones, moves, k, rad): break
         
-        print("cur_ones: ", cur_ones)
         return int(np.min(moves[cur_ones==k]))
 # COPY ABOVE
 
 if __name__ == "__main__":
     sol = Solution()
 
-    # Test 0
+    # # Test 0
     # result = sol.minimumMoves([1,1,0,1,1,0,0,1,1,0,0,1,0,0,1], k=5, maxChanges=1)
     # answer = 8
     # assert result == answer, f"{result} not equal to {answer}"
-    # nums: [1 1 0 1 1 0 0 1 1 0 0 1 0 0 1]. k: 5. maxChanges: 1
-    # Start: cur_ones: [3 3 3 3 3 2 2 3 3 2 2 2 2 2 2], moves: [3 3 4 3 3 3 3 3 3 3 3 2 3 3 2]
-    # Left. rad: 2. cur_ones: [3 3 4 4 3 3 3 3 3 3 3 2 2 3 2], moves: [3 3 6 5 3 5 5 3 3 5 5 2 3 5 2]
-    # Right. rad: 2. cur_ones: [3 4 5 4 3 4 4 3 3 4 3 2 3 3 2], moves: [3 5 8 5 3 7 7 3 3 7 5 2 5 5 2]
-    # Left. rad: 3. cur_ones: [3 4 5 5 4 4 5 4 3 4 4 3 3 3 3], moves: [ 3  5  8  8  6  7 10  6  3  7  8  5  5  5  5]
+    # # nums: [1 1 0 1 1 0 0 1 1 0 0 1 0 0 1]. k: 5. maxChanges: 1
+    # # Start: cur_ones: [3 3 3 3 3 2 2 3 3 2 2 2 2 2 2], moves: [3 3 4 3 3 3 3 3 3 3 3 2 3 3 2]
+    # # Left. rad: 2. cur_ones: [3 3 4 4 3 3 3 3 3 3 3 2 2 3 2], moves: [3 3 6 5 3 5 5 3 3 5 5 2 3 5 2]
+    # # Right. rad: 2. cur_ones: [3 4 5 4 3 4 4 3 3 4 3 2 3 3 2], moves: [3 5 8 5 3 7 7 3 3 7 5 2 5 5 2]
+    # # Left. rad: 3. cur_ones: [3 4 5 5 4 4 5 4 3 4 4 3 3 3 3], moves: [ 3  5  8  8  6  7 10  6  3  7  8  5  5  5  5]
 
-    # Test 1
+    # # Test 1
     # result = sol.minimumMoves([1,1,0,0,0,1,1,0,0,1], k=3, maxChanges=1)
     # answer = 3
     # assert result == answer, f"{result} not equal to {answer}"
 
-    # Test 2
+    # # Test 2
     # result = sol.minimumMoves([0,0,0,0], k=2, maxChanges=3)
     # answer = 4
     # assert result == answer, f"{result} not equal to {answer}" 
 
-    # Test 3
+    # # Test 3
     # result = sol.minimumMoves([0,0], k=1, maxChanges=3)
     # answer = 2
     # assert result == answer, f"{result} not equal to {answer}" 
 
-    # Test 4
+    # # Test 4
     # result = sol.minimumMoves([1,1], k=2, maxChanges=4)
     # answer = 1
     # assert result == answer, f"{result} not equal to {answer}" 
 
-    # Test 5
+    # # Test 5
     # f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
     # nums = [line.strip() for line in f.readlines()][0]
     # nums = [int(num) for num in nums[1:-1].split(",")]
@@ -186,7 +186,7 @@ if __name__ == "__main__":
     # answer = 6828536
     # assert result == answer, f"Calculated value {result} not equal to answer {answer}"
 
-    # Test 6
+    # # Test 6
     # f = open("./Leetcode/3086_Minimum_Moves_Hard/example2.txt", "r")
     # nums = [line.strip() for line in f.readlines()][0]
     # nums = [int(num) for num in nums[1:-1].split(",")]
@@ -198,7 +198,7 @@ if __name__ == "__main__":
     # answer = 33169542
     # assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
-    # Test 7
+    # # Test 7
     # f = open("./Leetcode/3086_Minimum_Moves_Hard/example3.txt", "r")
     # nums = [line.strip() for line in f.readlines()][0]
     # nums = [int(num) for num in nums[1:-1].split(",")]
@@ -210,7 +210,7 @@ if __name__ == "__main__":
     # answer = 15373116
     # assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
-    # Test 8
+    # # Test 8
     f = open("./Leetcode/3086_Minimum_Moves_Hard/example4.txt", "r")
     nums = [line.strip() for line in f.readlines()][0]
     nums = [int(num) for num in nums[1:-1].split(",")]
@@ -219,7 +219,7 @@ if __name__ == "__main__":
     end = time.time()
     print("result: ", result, ". Time (s): ", round(end-start, 2))
     # Parallel improved PC time (s): 4.32
-    answer = -1
+    answer = 2500000000
     assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     
