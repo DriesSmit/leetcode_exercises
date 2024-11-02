@@ -122,7 +122,8 @@ class Solution(object):
             rad = 1
             while rad < len(nums):
                 # The minimum step size that will overshoot
-                min_step_size = max(1, int(np.min(k-cur_ones)/2))
+                min_step_size = max(1, int(np.min(k-cur_ones[k!=cur_ones])/2))
+                print("k-cur_ones[k!=cur_ones]: ", (k-cur_ones[k!=cur_ones])[50000:])
                 rad += min_step_size
 
                 # Left case
@@ -174,7 +175,7 @@ if __name__ == "__main__":
     # assert result == answer, f"{result} not equal to {answer}" 
 
     # # Test 5
-    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example.txt", "r")
+    # f = open("./Leetcode/3086 Minimum Moves - Hard/example.txt", "r")
     # nums = [line.strip() for line in f.readlines()][0]
     # nums = [int(num) for num in nums[1:-1].split(",")]
     # start = time.time()
@@ -187,7 +188,7 @@ if __name__ == "__main__":
     # assert result == answer, f"Calculated value {result} not equal to answer {answer}"
 
     # # Test 6
-    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example2.txt", "r")
+    # f = open("./Leetcode/3086 Minimum Moves - Hard/example2.txt", "r")
     # nums = [line.strip() for line in f.readlines()][0]
     # nums = [int(num) for num in nums[1:-1].split(",")]
     # start = time.time()
@@ -199,7 +200,7 @@ if __name__ == "__main__":
     # assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     # # Test 7
-    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example3.txt", "r")
+    # f = open("./Leetcode/3086 Minimum Moves - Hard/example3.txt", "r")
     # nums = [line.strip() for line in f.readlines()][0]
     # nums = [int(num) for num in nums[1:-1].split(",")]
     # start = time.time()
@@ -211,7 +212,7 @@ if __name__ == "__main__":
     # assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     # # Test 8
-    # f = open("./Leetcode/3086_Minimum_Moves_Hard/example4.txt", "r")
+    # f = open("./Leetcode/3086 Minimum Moves - Hard/example4.txt", "r")
     # nums = [line.strip() for line in f.readlines()][0]
     # nums = [int(num) for num in nums[1:-1].split(",")]
     # start = time.time()
@@ -223,7 +224,7 @@ if __name__ == "__main__":
     # assert result == answer, f"Calculated value {result} not equal to answer {answer}" 
 
     # Test 9
-    f = open("./Leetcode/3086_Minimum_Moves_Hard/example5.txt", "r")
+    f = open("./Leetcode/3086 Minimum Moves - Hard/example5.txt", "r")
     nums = [line.strip() for line in f.readlines()][0]
     nums = [int(num) for num in nums[1:-1].split(",")]
     start = time.time()
