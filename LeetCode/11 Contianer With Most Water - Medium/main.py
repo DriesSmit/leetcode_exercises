@@ -24,4 +24,4 @@ class Solution:
 if __name__ == "__main__":
     solution_instance = Solution()
     checker = AnswerChecker(solution_instance.maxArea, num_inputs=1)
-    checker.check_all_cases()
+    checker.check_all_cases(time_it=True)
