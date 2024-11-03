@@ -6,28 +6,24 @@ from typing import List
 
 # COPY CODE BELOW
 class Solution:
-    def calc_area(self, i, j):
-        return abs(self.locs[j]-self.locs[i])*min(self.height[i], self.height[j])
+    def calc_area(self, l, r):
+        return (r-l)*min(self.height[l], self.height[r])
 
     def maxArea(self, height: List[int]) -> int:
-        # Single sort operation based on values in `height`
-        self.locs = sorted(range(len(height)), reverse=True, key=lambda k: height[k])
-        # Create a sorted version of `height` using the sorted indices from `locs`
-        self.height = [height[k] for k in self.locs]
+        self.height = height
+        left, right = 0, len(height)-1
 
         max_area = 0
-        for i in range(len(self.height)-1):
-            max_w = max(self.locs[i], len(self.height)-1-self.locs[i])
-            max_pos_i_area = self.height[i]*max_w
-            if max_pos_i_area > max_area:
-                for j in range(i+1, len(self.height)):
-                    if self.height[j]*max_w <= max_area:
-                        break
+        while left < right:
+            area = self.calc_area(left, right)
+            if area > max_area:
+                max_area = area
+            
+            if height[left] <= height[right]:
+                left+=1
+            else:
+                right-=1
 
-                    area = self.calc_area(i, j)
-                    if area > max_area:
-                        max_area = area
-        
         return max_area
 # COPY CODE ABOVE
 
