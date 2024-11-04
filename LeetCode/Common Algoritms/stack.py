@@ -22,3 +22,9 @@ class Stack:
 
     def __str__(self):
         return str(self.items)
+
+    def __len__(self):
+        return len(self.items)
+
+    def __iter__(self):
+        return iter(self.items)  # Allows iteration over items in the stack

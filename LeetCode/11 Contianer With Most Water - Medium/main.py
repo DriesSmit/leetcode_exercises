@@ -28,7 +28,6 @@ class Solution:
 # COPY CODE ABOVE
 
 if __name__ == "__main__":
-    # Time to beat: 8.4 s
     solution_instance = Solution()
     checker = AnswerChecker(solution_instance.maxArea, num_inputs=1)
     checker.check_all_cases(time_it=True)
