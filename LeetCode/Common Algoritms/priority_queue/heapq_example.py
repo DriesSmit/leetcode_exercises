@@ -18,3 +18,5 @@ print("Min-Heap after pop:", min_heap)     # Outputs the heap with 1 removed
  # If the current number is larger than the smallest in the heap, replace it
 # if num > min_heap[0]:
 #     heapq.heappushpop(min_heap, num)
+
+# On LeetCode you can just use heappop
