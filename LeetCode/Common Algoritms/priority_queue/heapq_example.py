@@ -19,4 +19,4 @@ print("Min-Heap after pop:", min_heap)     # Outputs the heap with 1 removed
 # if num > min_heap[0]:
 #     heapq.heappushpop(min_heap, num)
 
-# On LeetCode you can just use heappop
+# On LeetCode you can just use heappop()
