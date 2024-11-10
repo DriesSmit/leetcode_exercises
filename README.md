@@ -6,4 +6,4 @@ A collection of leetcode and other coding exercise solutions.
 2. If you get stuck, do not look at hints, categories, or solutions. Instead, identify specific areas where you need further study, focus on those, then return to the problem and try solving it again.
 3. If you’re still unsure how to progress, look at simular questions and try to solve them first.
 4. Thereafter try looking at hints and categories.
-4. If you solve the problem, review the top solutions. Reflect on how others approached the problem and think about ways to incorporate their methods into your problem-solving approach to achieve similar results in the future.
+5. If you solve the problem, review the top solutions. Reflect on how others approached the problem and think about ways to incorporate their methods into your problem-solving approach to achieve similar results in the future.
