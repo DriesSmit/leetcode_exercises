@@ -1,3 +1,5 @@
+# For min and max equivalents look at sparse tables.
+
 # function to find cumulative sum of list
 from itertools import accumulate 
  
