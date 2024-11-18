@@ -1,1 +1,1 @@
-https://leetcode.com/problems/edit-distance/description/?envType=study-plan-v2&envId=leetcode-75
+https://leetcode.com/problems/domino-and-tromino-tiling/description/?envType=study-plan-v2&envId=leetcode-75
