@@ -8,6 +8,7 @@ heapq.heapify(min_heap)  # Transform the list into a min-heap
 heapq.heappush(min_heap, 1)
 heapq.heappush(min_heap, 8)
 
+# Min value is at the start.
 print("Min-Heap:", min_heap)  # Outputs: [1, 2, 3, 10, 7, 5, 8]
 
 # Removing elements from the min-heap
