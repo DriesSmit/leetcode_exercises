@@ -1,1 +1,1 @@
-https://leetcode.com/problems/maximum-subsequence-score/?envType=study-plan-v2&envId=leetcode-75
+https://leetcode.com/problems/count-pairs-of-connectable-servers-in-a-weighted-tree-network/description/
