@@ -1,1 +1,1 @@
-https://leetcode.com/problems/count-pairs-of-connectable-servers-in-a-weighted-tree-network/description/
+https://leetcode.com/problems/longest-common-suffix-queries/
