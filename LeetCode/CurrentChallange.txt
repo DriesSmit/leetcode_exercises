@@ -1,1 +1,1 @@
-https://leetcode.com/problems/longest-common-suffix-queries/
+https://leetcode.com/problems/furthest-building-you-can-reach/description/

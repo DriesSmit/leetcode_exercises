@@ -19,3 +19,6 @@ for num, count in counter.items():
 # Use Counter in a sum calculation
 total_occurrences_of_odd_numbers = sum(count for num, count in counter.items() if num % 2 == 1)
 print(total_occurrences_of_odd_numbers)  # Output: 4 (1 appears once, 3 appears three times)
+
+
+print("Output is: " + 3.4)
