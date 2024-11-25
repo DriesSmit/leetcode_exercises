@@ -15,3 +15,4 @@ if __name__ == "__main__":
     print("Fibonacci numbers:")
     for i in range(10):
         print(f"fibonacci({i}) = {fibonacci(i)}")
+    fibonacci.cache_clear()
