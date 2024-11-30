@@ -37,6 +37,14 @@ def clearBit( num, i):
 	# Return the updated value
 	return num & mask
 
+# Function to get the number of bits in the binary representation of a number
+def getNumberOfBits(num):
+    # Return the number of bits required to represent the number in binary
+    return num.bit_length()
+
+def convert_to_binary_str(num):
+	return bin(num)[2:]
+
 # Driver Code
 # Given number N
 N = 70
